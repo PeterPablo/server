@@ -6,6 +6,7 @@
   "type": "music",
   "requirements": [],
   "codeowners": ["@chrisuthe"],
+  "features": ["browse", "search", "library_radios", "favorite_tracks_edit"],
   "multi_instance": true,
   "stage": "beta"
 }

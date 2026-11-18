@@ -5,6 +5,16 @@
   "name": "FeiNiu Music",
   "description": "Read your personal library from the native FeiNiu Music service.",
   "codeowners": ["@neqq3"],
+  "features": [
+    "browse",
+    "search",
+    "library_artists",
+    "library_albums",
+    "library_tracks",
+    "library_playlists",
+    "artist_albums",
+    "lyrics"
+  ],
   "requirements": [],
   "documentation": "https://music-assistant.io/music-providers/feiniu-music/",
   "multi_instance": true

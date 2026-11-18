@@ -6,6 +6,7 @@
   "type": "music",
   "requirements": [],
   "codeowners": ["@OzGav"],
+  "features": ["browse", "search"],
   "multi_instance": false,
   "stage": "stable"
 }

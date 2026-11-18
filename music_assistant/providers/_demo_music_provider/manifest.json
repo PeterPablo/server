@@ -4,6 +4,22 @@
   "name": "Demo Music Provider",
   "description": "Test/Example Music Provider for Music Assistant.",
   "codeowners": ["@yourgithubusername"],
+  "features": [
+    "browse",
+    "search",
+    "recommendations",
+    "library_artists",
+    "library_albums",
+    "library_tracks",
+    "library_playlists",
+    "artist_albums",
+    "artist_toptracks",
+    "library_artists_edit",
+    "library_albums_edit",
+    "library_tracks_edit",
+    "library_playlists_edit",
+    "similar_tracks"
+  ],
   "requirements": [],
   "documentation": "https://music-assistant.io/music-providers/demo/"
 }

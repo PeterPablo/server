@@ -6,6 +6,7 @@
   "type": "music",
   "requirements": ["onedrive-personal-sdk==0.1.7"],
   "codeowners": ["@OzGav"],
+  "features": ["browse", "search"],
   "multi_instance": true,
   "stage": "beta"
 }

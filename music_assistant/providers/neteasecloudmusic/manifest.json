@@ -5,6 +5,17 @@
   "name": "NetEase Cloud Music",
   "description": "Stream NetEase Cloud Music catalog, playlists, lyrics, and recommendations.",
   "codeowners": ["@xiasi0"],
+  "features": [
+    "search",
+    "recommendations",
+    "library_artists",
+    "library_albums",
+    "library_tracks",
+    "library_playlists",
+    "artist_albums",
+    "artist_toptracks",
+    "lyrics"
+  ],
   "requirements": [],
   "documentation": "https://music-assistant.io/music-providers/netease-cloud-music",
   "multi_instance": true

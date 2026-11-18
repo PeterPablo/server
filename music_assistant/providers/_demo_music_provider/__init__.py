@@ -100,6 +100,9 @@ SUPPORTED_FEATURES = {
     # that your music provider supports or an empty set if none.
     # for example 'ProviderFeature.BROWSE' if you can browse the provider's items.
     # see the ProviderFeature enum for all available features
+    # list the same features in the 'features' of manifest.json, so the app knows them
+    # before the provider is loaded. a feature that depends on the config or account of
+    # the instance is added at setup instead and stays out of both.
 }
 
 

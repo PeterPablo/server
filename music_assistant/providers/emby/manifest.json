@@ -5,6 +5,17 @@
   "name": "Emby Media Server Library",
   "description": "Stream music from your self-hosted Emby server.",
   "codeowners": ["@hatharry"],
+  "features": [
+    "browse",
+    "search",
+    "library_artists",
+    "library_albums",
+    "library_tracks",
+    "library_playlists",
+    "artist_albums",
+    "artist_toptracks",
+    "similar_tracks"
+  ],
   "credits": [],
   "requirements": [],
   "documentation": "https://music-assistant.io/music-providers/emby/",

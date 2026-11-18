@@ -6,6 +6,7 @@
   "type": "music",
   "requirements": [],
   "codeowners": ["@OzGav"],
+  "features": ["search", "artist_albums", "artist_toptracks"],
   "multi_instance": false,
   "stage": "stable"
 }

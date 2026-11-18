@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import pathlib
+import sys
 from typing import TYPE_CHECKING
 
 import pytest
@@ -11,6 +13,8 @@ from music_assistant_models.enums import ProviderFeature, ProviderTier
 from music_assistant_models.provider import ProviderManifest
 
 from music_assistant import mass as mass_module
+from music_assistant.models.music_provider import MusicProvider
+from music_assistant.providers.plex import helpers as plex_helpers
 
 if TYPE_CHECKING:
     from music_assistant.mass import MusicAssistant
@@ -130,3 +134,56 @@ async def test_audio_source_plugins_declare_the_feature(domain: str) -> None:
     manifest_path = pathlib.Path(mass_module.PROVIDERS_PATH, domain, "manifest.json")
     manifest = await ProviderManifest.parse(str(manifest_path))
     assert ProviderFeature.AUDIO_SOURCE in manifest.features
+
+
+def _music_provider_domains() -> list[str]:
+    """Return the domains of the built-in music providers."""
+    return sorted(
+        path.parent.name
+        for path in pathlib.Path(mass_module.PROVIDERS_PATH).glob("*/manifest.json")
+        if json.loads(path.read_text())["type"] == "music"
+    )
+
+
+def _features_in_every_config(domain: str) -> set[ProviderFeature]:
+    """
+    Return the features the code of a built-in music provider offers in every configuration.
+
+    :param domain: Domain of the music provider.
+    """
+    if domain == "plex":
+        # the library type chosen at setup picks one of these sets as a whole
+        return (
+            plex_helpers.SUPPORTED_FEATURES
+            & plex_helpers.AUDIOBOOK_FEATURES
+            & plex_helpers.PODCAST_FEATURES
+        )
+    package = importlib.import_module(f"music_assistant.providers.{domain}")
+    classes = {
+        value
+        for value in vars(package).values()
+        if isinstance(value, type) and issubclass(value, MusicProvider)
+    }
+    # setup builds the most derived one, the package may also import the classes it builds on
+    (provider_class,) = (
+        cls
+        for cls in classes
+        if not any(other is not cls and issubclass(other, cls) for other in classes)
+    )
+    # the provider is created with SUPPORTED_FEATURES, passed by its setup or by its class (or a
+    # class it builds on); its config or account can only add to these
+    for module in (package, *(sys.modules[cls.__module__] for cls in provider_class.__mro__)):
+        if (features := vars(module).get("SUPPORTED_FEATURES")) is not None:
+            return set(features)
+    pytest.fail(f"no SUPPORTED_FEATURES found for {domain}")
+
+
+@pytest.mark.parametrize("domain", _music_provider_domains())
+async def test_music_provider_manifest_lists_the_features_it_always_offers(domain: str) -> None:
+    """A built-in music provider's manifest lists exactly the features its code always offers."""
+    manifest_path = pathlib.Path(mass_module.PROVIDERS_PATH, domain, "manifest.json")
+    manifest = await ProviderManifest.parse(str(manifest_path))
+    # compared as the providers/manifests API hands them out
+    assert set(manifest.to_dict()["features"]) == {
+        feature.value for feature in _features_in_every_config(domain)
+    }

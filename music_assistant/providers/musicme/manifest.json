@@ -5,6 +5,14 @@
   "name": "MusicMe",
   "description": "Stream music from MusicMe's catalogue — a French streaming service with 13M+ tracks.",
   "codeowners": ["@JulienDeveaux"],
+  "features": [
+    "browse",
+    "search",
+    "recommendations",
+    "library_playlists",
+    "artist_albums",
+    "artist_toptracks"
+  ],
   "requirements": [],
   "documentation": "https://music-assistant.io/music-providers/musicme",
   "multi_instance": true

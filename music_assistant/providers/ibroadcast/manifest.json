@@ -5,6 +5,14 @@
   "name": "iBroadcast",
   "description": "Stream your personal iBroadcast music collection from anywhere.",
   "codeowners": ["@robsonke"],
+  "features": [
+    "browse",
+    "library_artists",
+    "library_albums",
+    "library_tracks",
+    "library_playlists",
+    "artist_albums"
+  ],
   "credits": ["[ibroadcastaio](https://github.com/robsonke/ibroadcastaio)"],
   "requirements": ["ibroadcastaio==0.8.0"],
   "documentation": "https://music-assistant.io/music-providers/ibroadcast/",
