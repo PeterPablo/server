@@ -1,4 +1,4 @@
-"""Tests for provider manifest loading: the has_setup_flow flag, the tier and the features."""
+"""Tests for provider manifest loading: the has_setup_flow flag, the tier and the media types."""
 
 from __future__ import annotations
 
@@ -146,11 +146,11 @@ async def test_shipped_provider_is_core_whatever_its_manifest_says(
         "yandex_ynison",
     ],
 )
-async def test_audio_source_plugins_declare_the_feature(domain: str) -> None:
+async def test_audio_source_plugins_declare_the_media_type(domain: str) -> None:
     """A plugin that always offers an audio source declares it in its manifest."""
     manifest_path = pathlib.Path(mass_module.PROVIDERS_PATH, domain, "manifest.json")
     manifest = await ProviderManifest.parse(str(manifest_path))
-    assert ProviderFeature.AUDIO_SOURCE in manifest.features
+    assert MediaType.AUDIO_SOURCE in manifest.media_types
 
 
 def _music_provider_domains() -> list[str]:
