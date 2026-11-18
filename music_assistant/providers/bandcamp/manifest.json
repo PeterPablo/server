@@ -5,16 +5,7 @@
   "name": "Bandcamp",
   "description": "Stream music from Bandcamp's catalog.",
   "codeowners": ["@ALERTua", "@teancom"],
-  "features": [
-    "browse",
-    "search",
-    "recommendations",
-    "library_artists",
-    "library_albums",
-    "library_tracks",
-    "artist_albums",
-    "artist_toptracks"
-  ],
+  "media_types": ["artist", "album", "track"],
   "requirements": ["bandcamp-async-api==0.3.0"],
   "documentation": "https://music-assistant.io/music-providers/bandcamp/",
   "multi_instance": true

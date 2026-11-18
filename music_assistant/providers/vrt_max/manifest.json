@@ -8,5 +8,5 @@
   "requirements": [],
   "multi_instance": true,
   "codeowners": ["@bollewolle"],
-  "features": ["browse", "search"]
+  "media_types": ["radio", "podcast"]
 }

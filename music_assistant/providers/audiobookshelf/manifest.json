@@ -5,16 +5,7 @@
   "name": "Audiobookshelf",
   "description": "Stream audiobooks and podcasts from your personal Audiobookshelf server.",
   "codeowners": ["@fmunkes"],
-  "features": [
-    "browse",
-    "recommendations",
-    "library_artists",
-    "library_playlists",
-    "library_audiobooks",
-    "library_podcasts",
-    "audiobook_bookmarks",
-    "audiobook_bookmarks_edit"
-  ],
+  "media_types": ["artist", "playlist", "audiobook", "podcast"],
   "credits": ["[aioaudiobookshelf](https://github.com/music-assistant/aioaudiobookshelf)"],
   "requirements": ["aioaudiobookshelf==0.2.2"],
   "documentation": "https://music-assistant.io/music-providers/audiobookshelf",

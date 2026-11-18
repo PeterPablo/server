@@ -7,23 +7,7 @@
   "codeowners": [
     "@trudenboy"
   ],
-  "features": [
-    "browse",
-    "search",
-    "recommendations",
-    "library_artists",
-    "library_albums",
-    "library_tracks",
-    "library_playlists",
-    "artist_albums",
-    "artist_toptracks",
-    "library_artists_edit",
-    "library_albums_edit",
-    "library_tracks_edit",
-    "similar_tracks",
-    "similar_artists",
-    "lyrics"
-  ],
+  "media_types": ["artist", "album", "track", "playlist"],
   "credits": [
     "[yandex-music-api](https://github.com/MarshalX/yandex-music-api)"
   ],

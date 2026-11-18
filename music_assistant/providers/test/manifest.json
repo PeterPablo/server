@@ -5,15 +5,7 @@
   "name": "Test / demo provider",
   "description": "Test/Demo provider that creates a collection of fake media items.",
   "codeowners": ["@music-assistant"],
-  "features": [
-    "browse",
-    "library_artists",
-    "library_albums",
-    "library_tracks",
-    "library_audiobooks",
-    "library_podcasts",
-    "similar_tracks"
-  ],
+  "media_types": ["artist", "album", "track", "audiobook", "podcast"],
   "requirements": [],
   "documentation": "",
   "multi_instance": false,

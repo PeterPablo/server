@@ -6,7 +6,7 @@
   "type": "music",
   "requirements": [],
   "codeowners": ["@OzGav"],
-  "features": ["browse", "search"],
+  "media_types": ["podcast"],
   "multi_instance": false,
   "stage": "stable"
 }

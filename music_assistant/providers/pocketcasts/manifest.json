@@ -6,7 +6,7 @@
   "type": "music",
   "requirements": [],
   "codeowners": ["@yfhyou"],
-  "features": ["browse", "search", "library_podcasts", "library_podcasts_edit"],
+  "media_types": ["podcast"],
   "multi_instance": true,
   "stage": "stable"
 }

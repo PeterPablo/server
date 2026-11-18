@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from music_assistant_models.enums import ProviderFeature
+
 from .provider import WebDAVFileSystemProvider
 
 if TYPE_CHECKING:
@@ -12,6 +14,13 @@ if TYPE_CHECKING:
 
     from music_assistant.mass import MusicAssistant
     from music_assistant.models import ProviderInstanceType
+
+
+# Supported features
+SUPPORTED_FEATURES = {
+    ProviderFeature.BROWSE,
+    ProviderFeature.SEARCH,
+}
 
 
 async def setup(

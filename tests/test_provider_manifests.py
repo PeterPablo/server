@@ -9,15 +9,32 @@ import sys
 from typing import TYPE_CHECKING
 
 import pytest
-from music_assistant_models.enums import ProviderFeature, ProviderTier
+from music_assistant_models.enums import MediaType, ProviderFeature, ProviderTier
 from music_assistant_models.provider import ProviderManifest
 
 from music_assistant import mass as mass_module
-from music_assistant.models.music_provider import MusicProvider
+from music_assistant.models.music_provider import LIBRARY_FEATURE_BY_MEDIA_TYPE, MusicProvider
 from music_assistant.providers.plex import helpers as plex_helpers
 
 if TYPE_CHECKING:
     from music_assistant.mass import MusicAssistant
+
+# the feature that makes a music provider deliver a media type in every config
+_FEATURE_BY_MEDIA_TYPE = {
+    **LIBRARY_FEATURE_BY_MEDIA_TYPE,
+    MediaType.SOUND_EFFECT: ProviderFeature.SOUND_EFFECTS,
+}
+# the methods that deliver items of each media type a music provider can declare
+_METHODS_BY_MEDIA_TYPE = {
+    MediaType.ARTIST: ("get_artist", "get_library_artists"),
+    MediaType.ALBUM: ("get_album", "get_library_albums"),
+    MediaType.TRACK: ("get_track", "get_library_tracks"),
+    MediaType.PLAYLIST: ("get_playlist", "get_library_playlists"),
+    MediaType.RADIO: ("get_radio", "get_library_radios"),
+    MediaType.AUDIOBOOK: ("get_audiobook", "get_library_audiobooks"),
+    MediaType.PODCAST: ("get_podcast", "get_library_podcasts"),
+    MediaType.SOUND_EFFECT: ("get_sound_effect", "get_sound_effects"),
+}
 
 
 async def _load_manifests(mass_minimal: MusicAssistant) -> None:
@@ -145,6 +162,27 @@ def _music_provider_domains() -> list[str]:
     )
 
 
+def _provider_class(domain: str) -> type[MusicProvider]:
+    """
+    Return the class the setup of a built-in music provider builds.
+
+    :param domain: Domain of the music provider.
+    """
+    package = importlib.import_module(f"music_assistant.providers.{domain}")
+    classes = {
+        value
+        for value in vars(package).values()
+        if isinstance(value, type) and issubclass(value, MusicProvider)
+    }
+    # setup builds the most derived one, the package may also import the classes it builds on
+    (provider_class,) = (
+        cls
+        for cls in classes
+        if not any(other is not cls and issubclass(other, cls) for other in classes)
+    )
+    return provider_class
+
+
 def _features_in_every_config(domain: str) -> set[ProviderFeature]:
     """
     Return the features the code of a built-in music provider offers in every configuration.
@@ -158,18 +196,8 @@ def _features_in_every_config(domain: str) -> set[ProviderFeature]:
             & plex_helpers.AUDIOBOOK_FEATURES
             & plex_helpers.PODCAST_FEATURES
         )
-    package = importlib.import_module(f"music_assistant.providers.{domain}")
-    classes = {
-        value
-        for value in vars(package).values()
-        if isinstance(value, type) and issubclass(value, MusicProvider)
-    }
-    # setup builds the most derived one, the package may also import the classes it builds on
-    (provider_class,) = (
-        cls
-        for cls in classes
-        if not any(other is not cls and issubclass(other, cls) for other in classes)
-    )
+    provider_class = _provider_class(domain)
+    package = sys.modules[f"music_assistant.providers.{domain}"]
     # the provider is created with SUPPORTED_FEATURES, passed by its setup or by its class (or a
     # class it builds on); its config or account can only add to these
     for module in (package, *(sys.modules[cls.__module__] for cls in provider_class.__mro__)):
@@ -179,11 +207,41 @@ def _features_in_every_config(domain: str) -> set[ProviderFeature]:
 
 
 @pytest.mark.parametrize("domain", _music_provider_domains())
-async def test_music_provider_manifest_lists_the_features_it_always_offers(domain: str) -> None:
-    """A built-in music provider's manifest lists exactly the features its code always offers."""
+async def test_music_provider_manifest_media_types_agree_with_its_code(domain: str) -> None:
+    """
+    A built-in music provider's manifest agrees with its code on the media types it offers.
+
+    It declares the media type of each library feature it offers in every config, and no media
+    type it has no method to deliver items of.
+    """
     manifest_path = pathlib.Path(mass_module.PROVIDERS_PATH, domain, "manifest.json")
     manifest = await ProviderManifest.parse(str(manifest_path))
-    # compared as the providers/manifests API hands them out
-    assert set(manifest.to_dict()["features"]) == {
-        feature.value for feature in _features_in_every_config(domain)
+    provider_class = _provider_class(domain)
+    features = _features_in_every_config(domain)
+    undeclared = {
+        media_type
+        for media_type, feature in _FEATURE_BY_MEDIA_TYPE.items()
+        if feature in features and media_type not in manifest.media_types
     }
+    assert not undeclared
+    undeliverable = {
+        media_type
+        for media_type in manifest.media_types
+        if not any(
+            getattr(provider_class, method) is not getattr(MusicProvider, method)
+            for method in _METHODS_BY_MEDIA_TYPE.get(media_type, ())
+        )
+    }
+    assert not undeliverable
+
+
+async def test_provider_manifests_api_hands_out_the_media_types(
+    mass_minimal: MusicAssistant,
+) -> None:
+    """The manifests the server hands out carry the media types they declare, also when none."""
+    await _load_manifests(mass_minimal)
+    manifests = {
+        manifest.domain: manifest.to_dict() for manifest in mass_minimal.get_provider_manifests()
+    }
+    assert manifests["somafm"]["media_types"] == ["radio"]
+    assert manifests["filesystem_local"]["media_types"] == []

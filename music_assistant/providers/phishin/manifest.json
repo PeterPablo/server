@@ -6,14 +6,7 @@
   "type": "music",
   "requirements": [],
   "codeowners": ["@OzGav"],
-  "features": [
-    "browse",
-    "search",
-    "library_artists",
-    "artist_albums",
-    "artist_tracks",
-    "artist_toptracks"
-  ],
+  "media_types": ["artist", "album", "track", "playlist"],
   "multi_instance": false,
   "stage": "stable"
 }

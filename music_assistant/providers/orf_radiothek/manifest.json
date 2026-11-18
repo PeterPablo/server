@@ -11,5 +11,5 @@
   "dependencies": [],
   "config_entries": [],
   "codeowners": ["@DButter"],
-  "features": ["browse", "search"]
+  "media_types": ["radio", "podcast"]
 }
